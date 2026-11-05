@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1c1c1e">
+<title>PhotoGym</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1f;--mu:#6e6e73;--ln:#e3e1dc;--ac:#d9822b;--ac2:#fff;--ok:#2e8b57;--off:#ecebe7;--bad:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#141415;--card:#1f1f21;--tx:#f2f2f3;--mu:#9a9aa0;--ln:#323235;--ac:#f0a04b;--ac2:#1a1a1a;--ok:#5cc08a;--off:#262628;--bad:#ff7b6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--ln);padding:10px 16px 0}
+h1{margin:0 0 8px;font-size:1.3rem;letter-spacing:.5px}
+h1 small{font-weight:400;color:var(--mu);font-size:.75rem;margin-left:6px}
+nav{display:flex;gap:2px;max-width:720px}
+nav button{flex:1;background:none;border:0;border-bottom:3px solid transparent;color:var(--mu);padding:8px 2px;font:inherit;font-size:.82rem;cursor:pointer}
+nav button.on{color:var(--tx);border-color:var(--ac);font-weight:600}
+main{max-width:720px;margin:0 auto;padding:16px}
+footer{text-align:center;color:var(--mu);font-size:.75rem;padding:8px 16px 28px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px 16px;margin:0 0 14px}
+h2{margin:0 0 8px;font-size:1.05rem}
+h3{margin:12px 0 4px;font-size:.8rem;text-transform:uppercase;letter-spacing:.8px;color:var(--mu)}
+.muted{color:var(--mu);font-size:.88rem;margin:6px 0 0}
+.datebar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;text-transform:capitalize;text-align:center}
+.datebar button{background:var(--card);border:1px solid var(--ln);color:var(--tx);border-radius:10px;width:42px;height:42px;font-size:1.3rem;cursor:pointer}
+.datebar2{display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.chip-today{background:var(--ac);color:var(--ac2);border-radius:20px;padding:1px 9px;font-size:.72rem;margin-left:8px;text-transform:none;font-weight:600}
+input,textarea,button,select{font:inherit}
+input[type=date],input[type=text],textarea,select{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:10px;padding:8px 10px;width:100%}
+.datebar2 input{width:auto}
+.datebar2 button,.sm{background:none;border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:7px 12px;cursor:pointer}
+.big{font-size:2.4rem;font-weight:700;line-height:1}
+.big span{font-size:1rem;font-weight:400;color:var(--mu);margin-left:6px}
+.bar{height:9px;background:var(--off);border-radius:9px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:9px;transition:width .3s}
+.chk{list-style:none;margin:0;padding:0}
+.chk li{display:flex;gap:10px;padding:4px 0;color:var(--mu)}
+.chk li.done{color:var(--tx)}.chk li.done span{color:var(--ok);font-weight:700}
+.primary{display:block;width:100%;background:var(--ac);color:var(--ac2);border:0;border-radius:12px;padding:14px;font-weight:700;cursor:pointer;margin:0 0 14px}
+.ph{border-top:1px solid var(--ln);padding:10px 0}.ph:first-of-type{border-top:0}
+.phh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.phh .sm{padding:3px 9px;font-size:.8rem;margin-left:4px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0}
+.tags em{font-style:normal;font-size:.76rem;background:var(--off);border-radius:20px;padding:2px 9px}
+.note{margin:4px 0;white-space:pre-wrap}.meta{color:var(--mu);font-size:.82rem}
+.tw{overflow-x:auto;margin:0 -4px}
+.wk{border-collapse:collapse;width:100%;font-size:.84rem;background:var(--card);border:1px solid var(--ln);border-radius:12px}
+.wk th,.wk td{text-align:center;padding:6px 4px;border-bottom:1px solid var(--ln)}
+.wk .nm{text-align:left;padding-left:10px;min-width:150px}
+.wk th a{cursor:pointer;display:block;font-size:.72rem;color:var(--mu)}.wk th a.tod{color:var(--ac);font-weight:700}
+.wk small{font-size:.95rem;color:var(--tx)}
+.wk .dim td{background:var(--off);text-align:left;padding-left:10px;font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.6px}
+.wk .dim td:not(:first-child){text-align:center;text-transform:none}
+.wk td.off{background:var(--off)}.ok{color:var(--ok)}.no{color:var(--mu)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stats .card{margin:0;text-align:center;padding:12px 6px}.stats b{display:block;font-size:1.7rem}.stats span{font-size:.78rem;color:var(--mu)}
+.dimrow{margin:10px 0}.dimrow div:first-child{display:flex;justify-content:space-between;font-size:.9rem}
+.weak{color:var(--ac);font-weight:600}
+.hd{display:flex;justify-content:space-between;cursor:pointer;font-weight:600;text-transform:capitalize}
+label.f{display:block;margin:10px 0;font-size:.85rem;color:var(--mu)}
+label.f input,label.f textarea,label.f select{margin-top:4px}
+dialog{border:1px solid var(--ln);border-radius:16px;background:var(--card);color:var(--tx);width:min(560px,94vw);max-height:92vh;padding:18px;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog label.ck{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:.95rem}
+dialog label.ck input{margin-top:4px;width:18px;height:18px;accent-color:var(--ac)}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.row .primary{margin:0}.row .sec{background:none;border:1px solid var(--ln);color:var(--tx);border-radius:12px;padding:12px;cursor:pointer}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--ln);background:none;color:var(--tx);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:.85rem}
+.chip.on{background:var(--ac);color:var(--ac2);border-color:var(--ac);font-weight:600}
+details{margin:8px 0;font-size:.88rem;color:var(--mu)}details summary{cursor:pointer;color:var(--tx)}
+details ol{padding-left:20px;margin:8px 0}details li{margin:4px 0}
+.err{color:var(--bad)}
+</style>
+</head>
+<body>
+<header>
+  <h1>PhotoGym<small>5 fotos al día</small></h1>
+  <nav id="tabs">
+    <button data-v="hoy">Hoy</button>
+    <button data-v="semana">Semana</button>
+    <button data-v="progreso">Progreso</button>
+    <button data-v="historial">Historial</button>
+    <button data-v="ajustes">Ajustes</button>
+  </nav>
+</header>
+<main id="app"></main>
+<footer>PhotoGym v2 · tus datos se guardan en este navegador</footer>
+<dialog id="dlg"></dialog>
+<input type="file" id="imp" accept="application/json" hidden>
+
+<script>
+/* Rutina PhotoGym (días: 1=lun ... 6=sáb) */
+const DIMS=[
+ {n:'Composición',items:[
+  ['Encuadres',[1,3,5]],['Punto de interés evidente',[3,5]],['Regla de los tercios',[1,2,4,6]],
+  ['Planos, ángulos, altura de cámara',[2,4,6]],['Ritmo',[2,4]],['Patrones',[3,5]],['Geometrías',[1,2,3,4,5,6]]]},
+ {n:'Tiempo-espacio',items:[
+  ['Barridos',[1,4,6]],['Congelados',[3,5]],['Paneo',[2,4,6]],['Poca profundidad de campo',[1,3,4]],
+  ['Mucha profundidad de campo',[2,4,6]],['Primer plano enfocado',[1,6]],['Último plano enfocado',[2,4,6]]]},
+ {n:'Luz',items:[
+  ['Calidad de la luz (dura o difusa)',[1,3,5]],['Dirección de la luz',[2,4,6]],
+  ['Color de la luz',[1,4]],['Cantidad de luz (poca o mucha)',[3,5]]]},
+ {n:'Color',items:[['Color esencial',[1,3,5]],['Colores tenues',[2,4,6]],['Blanco y negro',[1,2,3,4,5,6]]]},
+ {n:'Tono',items:[['Contraste alto',[1,3,5]],['Contraste bajo',[2,4,6]]]},
+ {n:'Óptica',items:[['Angular',[3,4,5]],['Normal',[1,3,6]],['Medio-telefoto',[2,4]]]}
+];
+const ITEMS=[];
+DIMS.forEach((d,di)=>d.items.forEach((it,ii)=>ITEMS.push({id:di+'-'+ii,dim:di,name:it[0],days:it[1]})));
+const META=5;
+const KEY='photogym-v1';        /* misma clave que v1: los datos son compatibles */
+const CFG_KEY='photogym-cfg';
+
+/* Valores predefinidos para elegir al registrar una foto */
+const AP_STD=['3.5','4','5','5.6','6.3','8','11','16'];
+const ISO_L=['100','200','400','800','1600','3200','6400','Auto'];
+const SS_L=['1/4000','1/2000','1/1000','1/500','1/250','1/125','1/60','1/30','1/15','1/8','1/4','1/2','1"'];
+const MODES=['Av','Tv','M','P','Fv'];
+const DEF_GEAR=()=>({camera:'Canon EOS R10',lenses:[{id:'rf18150',name:'RF 18-150mm f/3.5-6.3 IS STM',focals:['18','24','35','50','70','100','150'],aps:AP_STD.slice()}]});
+
+/* Utilidades */
+const app=document.getElementById('app'),dlg=document.getElementById('dlg');
+const pad=n=>String(n).padStart(2,'0');
+const fmt=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const today=()=>fmt(new Date());
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return fmt(d)};
+const dow=s=>parse(s).getDay();
+const monday=s=>{const d=dow(s);return addDays(s,d===0?-6:1-d)};
+const sched=s=>ITEMS.filter(i=>i.days.includes(dow(s)));
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dlabel=s=>parse(s).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+const nameOf=id=>(ITEMS.find(i=>i.id===id)||{name:id}).name;
+
+/* Datos */
+function normGear(x){
+  x.gear=x.gear||DEF_GEAR();
+  x.gear.camera=x.gear.camera||'';
+  x.gear.lenses=(x.gear.lenses||[]).map(l=>({
+    id:l.id||('l'+Math.random().toString(36).slice(2,8)),
+    name:l.name||'Objetivo',
+    focals:(l.focals||[]).map(String),
+    aps:(l.aps||AP_STD).map(String)
+  }));
+  return x;
+}
+function load(){
+  let x=null;
+  try{x=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  if(!x||typeof x.photos!=='object'||!x.photos)x={photos:{}};
+  if(!x.gear)x.gear=DEF_GEAR();
+  if(!x.del)x.del={};
+  return normGear(x);
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert('No se pudo guardar en este navegador.')}}
+function loadCfg(){try{return JSON.parse(localStorage.getItem(CFG_KEY))||{}}catch(e){return{}}}
+function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}}
+let db=load(),cfg=loadCfg(),view='hoy',cur=today(),weekRef=today(),driveMsg='',driveErr=false;
+const photosOf=s=>db.photos[s]||[];
+const covered=s=>{const set=new Set();photosOf(s).forEach(p=>(p.ex||[]).forEach(e=>set.add(e)));return set};
+const lensByName=n=>db.gear.lenses.find(l=>l.name===n);
+
+/* Fusiona dos conjuntos de datos (a = local, b = remoto/importado) */
+function merge(a,b){
+  const out={photos:{},del:Object.assign({},b.del||{},a.del||{})};
+  const dates=new Set([...Object.keys(a.photos||{}),...Object.keys(b.photos||{})]);
+  dates.forEach(d=>{
+    const m=new Map();
+    [...((b.photos||{})[d]||[]),...((a.photos||{})[d]||[])].forEach(p=>{
+      if(!p||!p.id||out.del[p.id])return;
+      const o=m.get(p.id);
+      if(!o||(p.u||p.t||0)>=(o.u||o.t||0))m.set(p.id,p);
+    });
+    const arr=[...m.values()].sort((x,y)=>(x.t||0)-(y.t||0));
+    if(arr.length)out.photos[d]=arr;
+  });
+  const ga=(a.gear||{}),gb=(b.gear||{});
+  const lenses=(ga.lenses||[]).slice();
+  (gb.lenses||[]).forEach(l=>{if(!lenses.some(x=>x.id===l.id||x.name===l.name))lenses.push(l)});
+  out.gear={camera:ga.camera||gb.camera||'',lenses};
+  return normGear(out);
+}
+
+/* Texto de cámara/ajustes de una foto (compatible con registros de v1) */
+function camText(p){
+  const c=p.cam||{};
+  const parts=[c.lens,c.mode,c.focal&&c.focal+' mm',c.ap&&'f/'+c.ap,c.iso&&'ISO '+c.iso,c.ss&&(String(c.ss).startsWith('1/')?c.ss+' s':c.ss)];
+  if(p.lens)parts.push(p.lens);
+  if(p.set)parts.push(p.set);
+  return parts.filter(Boolean).map(esc).join(' · ');
+}
+
+/* Render */
+function render(){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  ({hoy:rHoy,semana:rSemana,progreso:rProg,historial:rHist,ajustes:rSet})[view]();
+}
+
+function photoCard(p,i){
+  const tags=(p.ex||[]).map(e=>`<em>${esc(nameOf(e))}</em>`).join('');
+  const meta=camText(p);
+  return `<div class="ph"><div class="phh"><b>Foto ${i+1}</b><span>
+    <button class="sm" data-a="edit" data-id="${p.id}">Editar</button><button class="sm" data-a="del" data-id="${p.id}">Borrar</button></span></div>
+    ${tags?`<div class="tags">${tags}</div>`:''}
+    ${p.note?`<div class="note">${esc(p.note)}</div>`:''}
+    ${meta?`<div class="meta">${meta}</div>`:''}</div>`;
+}
+
+function rHoy(){
+  const n=dow(cur),ps=photosOf(cur),cov=covered(cur),items=sched(cur),isToday=cur===today();
+  let h=`<div class="datebar"><button data-a="prev" aria-label="Día anterior">‹</button>
+    <div><strong>${esc(dlabel(cur))}</strong>${isToday?'<span class="chip-today">hoy</span>':''}</div>
+    <button data-a="next" aria-label="Día siguiente">›</button></div>
+    <div class="datebar2"><input type="date" id="dpick" value="${cur}">${isToday?'':'<button data-a="today">Ir a hoy</button>'}</div>`;
+  if(n===0){app.innerHTML=h+'<p class="card">Los domingos no hay ejercicios en la rutina. Descansa o elige otro día.</p>';return}
+  const pct=Math.min(ps.length/META,1)*100;
+  h+=`<section class="card"><div class="big">${ps.length}<span>/ ${META} fotos</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <p class="muted">${cov.size} de ${items.length} ejercicios del día cubiertos${ps.length>=META?' · ¡día completo!':''}</p></section>`;
+  h+='<section class="card"><h2>Ejercicios del día</h2>';
+  DIMS.forEach((d,di)=>{
+    const its=items.filter(i=>i.dim===di);if(!its.length)return;
+    h+=`<h3>${d.n}</h3><ul class="chk">`+its.map(i=>`<li class="${cov.has(i.id)?'done':''}"><span>${cov.has(i.id)?'✓':'○'}</span>${esc(i.name)}</li>`).join('')+'</ul>';
+  });
+  h+='</section>';
+  h+=`<button class="primary" data-a="add">+ Registrar foto ${ps.length+1}</button>`;
+  if(ps.length)h+='<section class="card"><h2>Fotos registradas</h2>'+ps.map(photoCard).join('')+'</section>';
+  app.innerHTML=h;
+}
+
+function rSemana(){
+  const m=monday(weekRef),days=[0,1,2,3,4,5].map(i=>addDays(m,i));
+  const short=s=>parse(s).toLocaleDateString('es-MX',{day:'numeric',month:'short'});
+  const names=['LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+  let h=`<div class="datebar"><button data-a="wprev" aria-label="Semana anterior">‹</button>
+    <div><strong>${short(days[0])} – ${short(days[5])}</strong></div><button data-a="wnext" aria-label="Semana siguiente">›</button></div>`;
+  h+='<div class="tw"><table class="wk"><thead><tr><th></th>'+days.map((d,i)=>
+    `<th><a data-a="goto" data-d="${d}" class="${d===today()?'tod':''}">${names[i]}<br><small>${parse(d).getDate()}</small></a></th>`).join('')+'</tr></thead><tbody>';
+  const covs=days.map(covered);
+  DIMS.forEach((d,di)=>{
+    h+=`<tr class="dim"><td colspan="7">${d.n}</td></tr>`;
+    ITEMS.filter(i=>i.dim===di).forEach(it=>{
+      h+=`<tr><td class="nm">${esc(it.name)}</td>`+days.map((ds,k)=>{
+        if(!it.days.includes(k+1))return'<td class="off"></td>';
+        return covs[k].has(it.id)?'<td><b class="ok">●</b></td>':'<td><span class="no">○</span></td>';
+      }).join('')+'</tr>';
+    });
+  });
+  h+='<tr class="dim"><td>Fotos</td>'+days.map(ds=>`<td>${photosOf(ds).length}/${META}</td>`).join('')+'</tr></tbody></table></div>';
+  h+='<p class="muted">● cubierto · ○ pendiente · gris = no toca ese día. Toca un día para registrarlo.</p>';
+  app.innerHTML=h;
+}
+
+function rProg(){
+  const dates=Object.keys(db.photos).filter(d=>photosOf(d).length);
+  const total=dates.reduce((a,d)=>a+photosOf(d).length,0);
+  const full=dates.filter(d=>photosOf(d).length>=META).length;
+  let streak=0,d=today();
+  if(photosOf(d).length<META)d=addDays(d,-1);
+  for(let i=0;i<400;i++){
+    if(dow(d)!==0){if(photosOf(d).length>=META)streak++;else break}
+    d=addDays(d,-1);
+  }
+  const st=DIMS.map(()=>({t:0,c:0}));
+  dates.forEach(ds=>{const cv=covered(ds);sched(ds).forEach(i=>{st[i.dim].t++;if(cv.has(i.id))st[i.dim].c++})});
+  let weak=-1,wr=2;
+  st.forEach((x,i)=>{if(x.t){const r=x.c/x.t;if(r<wr){wr=r;weak=i}}});
+  let h=`<div class="stats"><div class="card"><b>${streak}</b><span>racha de días</span></div>
+    <div class="card"><b>${full}</b><span>días completos</span></div>
+    <div class="card"><b>${total}</b><span>fotos en total</span></div></div>`;
+  h+='<section class="card"><h2>Ejercicios cubiertos por dimensión</h2>';
+  if(!dates.length)h+='<p class="muted">Aún no hay registros. Empieza con tu primera foto de hoy.</p>';
+  DIMS.forEach((dm,i)=>{
+    const x=st[i],p=x.t?Math.round(x.c/x.t*100):0;
+    h+=`<div class="dimrow"><div><span class="${i===weak&&dates.length?'weak':''}">${dm.n}${i===weak&&dates.length?' · a reforzar':''}</span><span>${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div></div>`;
+  });
+  h+='<p class="muted">Calculado sobre los días en que has registrado fotos.</p></section>';
+  app.innerHTML=h;
+}
+
+function rHist(){
+  const dates=Object.keys(db.photos).filter(d=>photosOf(d).length).sort().reverse();
+  if(!dates.length){app.innerHTML='<p class="card">Todavía no hay fotos registradas.</p>';return}
+  app.innerHTML=dates.map(ds=>{
+    const ps=photosOf(ds);
+    return `<section class="card"><div class="hd" data-a="goto" data-d="${ds}"><span>${esc(dlabel(ds))}</span><span>${ps.length}/${META}</span></div>`+
+      ps.map((p,i)=>{
+        const tags=(p.ex||[]).map(e=>`<em>${esc(nameOf(e))}</em>`).join('');
+        const meta=camText(p);
+        return `<div class="ph"><b>Foto ${i+1}</b>${tags?`<div class="tags">${tags}</div>`:''}${p.note?`<div class="note">${esc(p.note)}</div>`:''}${meta?`<div class="meta">${meta}</div>`:''}</div>`;
+      }).join('')+'</section>';
+  }).join('');
+}
+
+/* Ajustes: equipo y respaldo */
+function rSet(){
+  const g=db.gear;
+  let h=`<section class="card"><h2>Equipo</h2>
+    <label class="f">Cámara<input type="text" id="camname" value="${esc(g.camera||'')}"></label>
+    <h3>Objetivos</h3>`;
+  h+=g.lenses.length?g.lenses.map(l=>`<div class="ph"><div class="phh"><b>${esc(l.name)}</b><span>
+    <button class="sm" data-a="lens-edit" data-id="${esc(l.id)}">Editar</button><button class="sm" data-a="lens-del" data-id="${esc(l.id)}">Borrar</button></span></div>
+    <div class="meta">Focales: ${l.focals.length?l.focals.map(esc).join(', ')+' mm':'—'} · Aperturas: ${l.aps.map(a=>'f/'+esc(a)).join(', ')}</div></div>`).join('')
+    :'<p class="muted">Sin objetivos registrados.</p>';
+  h+='<button class="sm" style="margin-top:10px" data-a="lens-add">+ Agregar objetivo</button></section>';
+
+  const last=cfg.lastBackup?'Última sincronización: '+new Date(cfg.lastBackup).toLocaleString('es-MX'):'Aún no sincronizado.';
+  h+=`<section class="card"><h2>Respaldo en Google Drive</h2>
+    <p class="muted">Sincroniza tus registros con un archivo <b>photogym-respaldo.json</b> en tu Drive. Al sincronizar se fusionan los datos de este dispositivo con los del archivo, así puedes usarla en varios dispositivos.</p>
+    <label class="f">ID de cliente de Google (OAuth)<input type="text" id="cid" value="${esc(cfg.clientId||'')}" placeholder="xxxxxxxx.apps.googleusercontent.com" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <details><summary>¿Cómo obtengo el ID de cliente?</summary><ol>
+      <li>Entra a <b>console.cloud.google.com</b> y crea un proyecto.</li>
+      <li>En <i>APIs y servicios → Biblioteca</i>, activa <b>Google Drive API</b>.</li>
+      <li>En <i>Pantalla de consentimiento de OAuth</i>, elige tipo <i>Externo</i> y agrega tu correo como usuario de prueba.</li>
+      <li>En <i>Credenciales → Crear credenciales → ID de cliente de OAuth</i>, tipo <i>Aplicación web</i>.</li>
+      <li>En <i>Orígenes de JavaScript autorizados</i> escribe la dirección de tu página, por ejemplo <b>https://tu-usuario.github.io</b> (sin la ruta del repositorio).</li>
+      <li>Copia el ID de cliente que termina en <b>.apps.googleusercontent.com</b> y pégalo arriba.</li></ol>
+      Solo se pide el permiso <i>drive.file</i>: la página únicamente ve el archivo que ella misma crea.</details>
+    <button class="primary" data-a="sync" style="margin-top:12px">Sincronizar con Drive</button>
+    <p class="muted ${driveErr?'err':''}" id="dmsg">${esc(driveMsg||last)}</p></section>`;
+
+  h+=`<section class="card"><h2>Respaldo en archivo</h2>
+    <p class="muted" style="margin-bottom:10px">Alternativa sin configuración: descarga el JSON y guárdalo donde quieras, por ejemplo en Drive. Al importar, los datos se fusionan con los actuales.</p>
+    <div class="tools"><button class="sm" data-a="dl">Descargar JSON</button>
+    ${navigator.canShare?'<button class="sm" data-a="share">Compartir / guardar en Drive</button>':''}
+    <button class="sm" data-a="import">Importar JSON</button></div></section>`;
+  app.innerHTML=h;
+  if(cfg.clientId)loadGis().catch(()=>{});
+}
+
+/* Google Drive (OAuth con Google Identity Services, permiso drive.file) */
+const DRIVE_NAME='photogym-respaldo.json',SCOPE='https://www.googleapis.com/auth/drive.file';
+let gisP=null;
+function loadGis(){
+  if(window.google&&google.accounts&&google.accounts.oauth2)return Promise.resolve();
+  if(!gisP)gisP=new Promise((res,rej)=>{
+    const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';
+    s.onload=res;s.onerror=()=>{gisP=null;rej(new Error('No se pudo cargar el servicio de Google. ¿Hay conexión?'))};
+    document.head.appendChild(s);
+  });
+  return gisP;
+}
+async function getToken(){
+  if(!cfg.clientId)throw new Error('Falta el ID de cliente de Google.');
+  await loadGis();
+  return new Promise((res,rej)=>{
+    const tc=google.accounts.oauth2.initTokenClient({
+      client_id:cfg.clientId,scope:SCOPE,
+      callback:r=>r.error?rej(new Error('Google rechazó el acceso ('+r.error+').')):res(r.access_token),
+      error_callback:()=>rej(new Error('No se completó la autorización con Google.'))
+    });
+    tc.requestAccessToken();
+  });
+}
+async function findRemote(tk){
+  const q=encodeURIComponent("name='"+DRIVE_NAME+"' and trashed=false");
+  const r=await fetch('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,modifiedTime)&orderBy=modifiedTime%20desc',{headers:{Authorization:'Bearer '+tk}});
+  if(!r.ok)throw new Error('Drive respondió '+r.status+' al buscar el respaldo.');
+  const j=await r.json();
+  return (j.files||[])[0]||null;
+}
+function setMsg(t,err){
+  driveMsg=t;driveErr=!!err;
+  const el=document.getElementById('dmsg');
+  if(el){el.textContent=t;el.classList.toggle('err',!!err)}
+}
+async function driveSync(){
+  try{
+    setMsg('Conectando con Google…');
+    const tk=await getToken();
+    setMsg('Buscando respaldo en Drive…');
+    let id=cfg.fileId||null;
+    if(!id){const f=await findRemote(tk);if(f)id=f.id}
+    let remote=null;
+    if(id){
+      const r=await fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+tk}});
+      if(r.ok){try{remote=await r.json()}catch(e){throw new Error('El archivo de Drive no tiene un formato válido.')}}
+      else if(r.status===404){id=null;cfg.fileId=null}
+      else throw new Error('Drive respondió '+r.status+' al descargar el respaldo.');
+    }
+    if(remote&&typeof remote.photos==='object'&&remote.photos){db=merge(db,remote);save()}
+    setMsg('Subiendo a Drive…');
+    const body=JSON.stringify(db);
+    let ok=false;
+    if(id){
+      const r=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+id+'?uploadType=media',{method:'PATCH',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body});
+      if(r.ok)ok=true;else if(r.status!==404)throw new Error('Drive respondió '+r.status+' al guardar.');
+    }
+    if(!ok){
+      const bd='pgb'+Date.now();
+      const mp='--'+bd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:DRIVE_NAME,mimeType:'application/json'})+'\r\n--'+bd+'\r\nContent-Type: application/json\r\n\r\n'+body+'\r\n--'+bd+'--';
+      const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+tk,'Content-Type':'multipart/related; boundary='+bd},body:mp});
+      if(!r.ok)throw new Error('Drive respondió '+r.status+' al crear el archivo.');
+      id=(await r.json()).id;
+    }
+    cfg.fileId=id;cfg.lastBackup=Date.now();saveCfg();
+    const n=Object.values(db.photos).reduce((a,x)=>a+x.length,0);
+    setMsg('✓ Sincronizado. '+n+' fotos en el respaldo.');
+  }catch(e){setMsg('⚠ '+e.message,true)}
+}
+
+/* Respaldo en archivo */
+function jsonFile(){return new File([JSON.stringify(db,null,2)],'photogym-respaldo-'+today()+'.json',{type:'application/json'})}
+function downloadJson(){
+  const f=jsonFile(),l=document.createElement('a');
+  l.href=URL.createObjectURL(f);l.download=f.name;
+  document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(l.href),1000);
+}
+async function shareJson(){
+  const f=jsonFile();
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'PhotoGym respaldo'})}catch(e){}}
+  else downloadJson();
+}
+
+/* Formulario de foto con ajustes predefinidos */
+let fsel={};
+function chipGroup(k,label,list,val,lab){
+  const vals=list.slice();
+  if(val&&!vals.includes(val))vals.push(val);
+  if(!vals.length)return'';
+  return `<h3>${label}</h3><div class="chips">`+vals.map(v=>`<button type="button" class="chip${v===val?' on':''}" data-a="chip" data-k="${k}" data-v="${esc(v)}">${esc(lab?lab(v):v)}</button>`).join('')+'</div>';
+}
+function camGroups(){
+  const l=lensByName(fsel.lens);
+  return chipGroup('mode','Modo',MODES,fsel.mode)
+    +chipGroup('focal','Distancia focal',l?l.focals:[],fsel.focal,v=>v+' mm')
+    +chipGroup('ap','Apertura',l?l.aps:AP_STD,fsel.ap,v=>'f/'+v)
+    +chipGroup('iso','ISO',ISO_L,fsel.iso)
+    +chipGroup('ss','Velocidad de obturación',SS_L,fsel.ss,v=>String(v).startsWith('1/')?v+' s':v);
+}
+function openForm(id){
+  const ps=photosOf(cur),p=id?ps.find(x=>x.id===id):null,sel=new Set(p?p.ex:[]);
+  const g=db.gear;
+  const def=g.lenses.some(l=>l.name===cfg.lastLens)?cfg.lastLens:(g.lenses[0]?g.lenses[0].name:'');
+  fsel=Object.assign({lens:def,focal:'',ap:'',iso:'',ss:'',mode:''},p&&p.cam?p.cam:{});
+  if(!fsel.lens)fsel.lens=def;
+  const names=g.lenses.map(l=>l.name);
+  if(fsel.lens&&!names.includes(fsel.lens))names.push(fsel.lens);
+  let h=`<form id="pf"><h2>${p?'Editar foto':'Nueva foto'}</h2><p class="muted">Marca los ejercicios que cumple esta foto.</p>`;
+  const items=sched(cur);
+  DIMS.forEach((d,di)=>{
+    const its=items.filter(i=>i.dim===di);if(!its.length)return;
+    h+=`<h3>${d.n}</h3>`+its.map(i=>`<label class="ck"><input type="checkbox" name="ex" value="${i.id}" ${sel.has(i.id)?'checked':''}>${esc(i.name)}</label>`).join('');
+  });
+  h+=`<label class="f">Nota<textarea id="fn" rows="3" placeholder="¿Qué intentaste? ¿Qué aprendiste?">${esc(p?p.note||'':'')}</textarea></label>
+    <h3>Cámara y ajustes (opcional)</h3><p class="muted" style="margin-top:0">${esc(g.camera||'')}. Toca un valor para elegirlo; vuelve a tocarlo para quitarlo.</p>
+    <label class="f">Objetivo<select id="fl">${names.length?names.map(n=>`<option value="${esc(n)}" ${n===fsel.lens?'selected':''}>${esc(n)}</option>`).join(''):'<option value="">(sin objetivos)</option>'}</select></label>
+    <div id="camg">${camGroups()}</div>
+    <div class="row" style="margin-top:16px"><button type="button" class="sec" data-a="close">Cancelar</button><button type="submit" class="primary">Guardar</button></div></form>`;
+  dlg.innerHTML=h;
+  dlg.showModal();
+  document.getElementById('pf').onsubmit=e=>{
+    e.preventDefault();
+    const ex=[...dlg.querySelectorAll('input[name=ex]:checked')].map(x=>x.value);
+    const cam={};
+    ['lens','mode','focal','ap','iso','ss'].forEach(k=>{if(fsel[k])cam[k]=fsel[k]});
+    const data={ex,note:dlg.querySelector('#fn').value.trim(),cam,u:Date.now()};
+    if(p)Object.assign(p,data);
+    else{(db.photos[cur]=db.photos[cur]||[]).push({id:Date.now().toString(36),t:Date.now(),...data})}
+    if(fsel.lens){cfg.lastLens=fsel.lens;saveCfg()}
+    save();dlg.close();render();
+  };
+}
+
+/* Formulario de objetivo */
+function openLens(id){
+  const l=id?db.gear.lenses.find(x=>x.id===id):null;
+  dlg.innerHTML=`<form id="lf"><h2>${l?'Editar objetivo':'Nuevo objetivo'}</h2>
+    <label class="f">Nombre<input type="text" id="ln" value="${esc(l?l.name:'')}" placeholder="Ej. RF 50mm f/1.8 STM"></label>
+    <label class="f">Distancias focales (mm), separadas por comas<input type="text" id="lfo" value="${esc(l?l.focals.join(', '):'')}" placeholder="Zoom: 18, 35, 50, 100 · Fijo: 50"></label>
+    <label class="f">Aperturas disponibles, separadas por comas<input type="text" id="lap" value="${esc(l?l.aps.join(', '):'')}" placeholder="Ej. 1.8, 2.8, 4, 5.6, 8, 11 (vacío = valores estándar)"></label>
+    <div class="row" style="margin-top:16px"><button type="button" class="sec" data-a="close">Cancelar</button><button type="submit" class="primary">Guardar</button></div></form>`;
+  dlg.showModal();
+  document.getElementById('lf').onsubmit=e=>{
+    e.preventDefault();
+    const name=dlg.querySelector('#ln').value.trim();
+    if(!name){dlg.querySelector('#ln').focus();return}
+    const list=s=>s.split(/[,;\s]+/).map(x=>x.trim().replace(/^f\/?/i,'').replace(/mm$/i,'')).filter(Boolean);
+    const focals=list(dlg.querySelector('#lfo').value);
+    let aps=list(dlg.querySelector('#lap').value);
+    if(!aps.length)aps=AP_STD.slice();
+    if(l){l.name=name;l.focals=focals;l.aps=aps}
+    else db.gear.lenses.push({id:'l'+Date.now().toString(36),name,focals,aps});
+    save();dlg.close();render();
+  };
+}
+
+/* Eventos */
+document.addEventListener('click',e=>{
+  const tab=e.target.closest('#tabs button');
+  if(tab){view=tab.dataset.v;render();window.scrollTo(0,0);return}
+  const el=e.target.closest('[data-a]');if(!el)return;
+  const a=el.dataset.a;
+  if(a==='prev'){cur=addDays(cur,-1);render()}
+  else if(a==='next'){cur=addDays(cur,1);render()}
+  else if(a==='today'){cur=today();render()}
+  else if(a==='add')openForm(null);
+  else if(a==='edit')openForm(el.dataset.id);
+  else if(a==='close')dlg.close();
+  else if(a==='chip'){
+    const k=el.dataset.k,v=el.dataset.v;
+    fsel[k]=fsel[k]===v?'':v;
+    document.getElementById('camg').innerHTML=camGroups();
+  }
+  else if(a==='del'){
+    if(confirm('¿Borrar esta foto del registro?')){
+      db.del=db.del||{};db.del[el.dataset.id]=Date.now();
+      db.photos[cur]=photosOf(cur).filter(p=>p.id!==el.dataset.id);
+      if(!db.photos[cur].length)delete db.photos[cur];
+      save();render();
+    }
+  }
+  else if(a==='wprev'){weekRef=addDays(weekRef,-7);render()}
+  else if(a==='wnext'){weekRef=addDays(weekRef,7);render()}
+  else if(a==='goto'){cur=el.dataset.d;view='hoy';render();window.scrollTo(0,0)}
+  else if(a==='lens-add')openLens(null);
+  else if(a==='lens-edit')openLens(el.dataset.id);
+  else if(a==='lens-del'){
+    if(confirm('¿Quitar este objetivo de la lista? Las fotos ya registradas conservan su dato.')){
+      db.gear.lenses=db.gear.lenses.filter(l=>l.id!==el.dataset.id);save();render();
+    }
+  }
+  else if(a==='sync')driveSync();
+  else if(a==='dl')downloadJson();
+  else if(a==='share')shareJson();
+  else if(a==='import')document.getElementById('imp').click();
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='dpick'&&t.value){cur=t.value;render()}
+  else if(t.id==='camname'){db.gear.camera=t.value.trim();save()}
+  else if(t.id==='cid'){cfg.clientId=t.value.trim();saveCfg();if(cfg.clientId)loadGis().catch(()=>{})}
+  else if(t.id==='fl'){
+    fsel.lens=t.value;
+    const l=lensByName(t.value);
+    if(l){
+      if(fsel.focal&&!l.focals.includes(fsel.focal))fsel.focal='';
+      if(fsel.ap&&!l.aps.includes(fsel.ap))fsel.ap='';
+    }
+    document.getElementById('camg').innerHTML=camGroups();
+  }
+  else if(t.id==='imp'){
+    const f=t.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const x=JSON.parse(r.result);
+        if(!x||typeof x.photos!=='object'||!x.photos)throw 0;
+        if(confirm('Los datos del archivo se fusionarán con los de este dispositivo. ¿Continuar?')){db=merge(db,x);save();render()}
+      }catch(err){alert('El archivo no es un respaldo válido de PhotoGym.')}
+      t.value='';
+    };
+    r.readAsText(f);
+  }
+});
+render();
+</script>
+</body>
+</html>
